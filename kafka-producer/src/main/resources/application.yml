@@ -3,7 +3,7 @@ server:
 
 spring:
   kafka:
-    bootstrap-servers: "localhost:9092"
+    bootstrap-servers: "broker:9092"
     consumer:
       auto-offset-reset: earliest
   profiles:

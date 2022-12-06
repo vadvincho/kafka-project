@@ -23,6 +23,9 @@ public class KafkaConsumerConfig {
     @Value("${kafka.group.id}")
     private String kafkaGroupId;
 
+    @Value("${kafka.consumer.id}")
+    private String kafkaConsumerId;
+
     @Bean
     public ConsumerFactory<String, OrderDto> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfigs());
@@ -35,7 +38,8 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaGroupId);
-        props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, 5242880);
+        props.put(ConsumerConfig.CLIENT_ID_CONFIG, kafkaConsumerId);
+//        props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, 5242880);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
         return props;
     }
