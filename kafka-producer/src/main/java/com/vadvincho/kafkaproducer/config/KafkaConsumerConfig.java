@@ -17,13 +17,16 @@ import java.util.Map;
 @Configuration
 public class KafkaConsumerConfig {
 
-    @Value("${kafka.server}")
+    @Value("${kafka.auto.offset.reset}")
+    private String autoOffsetReset;
+
+    @Value("${kafka.bootstrap-servers}")
     private String kafkaServer;
 
-    @Value("${kafka.group.id}")
+    @Value("${kafka.consumer.groupId}")
     private String kafkaGroupId;
 
-    @Value("${kafka.consumer.id}")
+    @Value("${kafka.consumer.clientId}")
     private String kafkaConsumerId;
 
     @Bean
@@ -41,6 +44,7 @@ public class KafkaConsumerConfig {
         props.put(ConsumerConfig.CLIENT_ID_CONFIG, kafkaConsumerId);
 //        props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, 5242880);
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, true);
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
         return props;
     }
 

@@ -16,4 +16,13 @@ public class OrderDto {
     private Double price;
 
     private String message;
+
+    public OrderDto() {
+    }
+
+    public OrderDto(Long userId, Double price, String message) {
+        this.userId = userId;
+        this.price = price;
+        this.message = message;
+    }
 }

@@ -2,6 +2,7 @@ package com.vadvincho.kafkaproducer.controller;
 
 import com.vadvincho.kafkaproducer.dto.OrderDto;
 import com.vadvincho.kafkaproducer.service.MessageService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ public class OrderMessageController {
 
     private final MessageService<OrderDto> messageService;
 
+    @Autowired
     public OrderMessageController(MessageService<OrderDto> messageService) {
         this.messageService = messageService;
     }

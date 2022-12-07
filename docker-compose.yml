@@ -14,7 +14,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
 
-  broker:
+  broker-1:
     image: confluentinc/cp-kafka:7.0.0
     container_name: broker
     ports:
@@ -26,17 +26,35 @@ services:
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,CONNECTIONS_FROM_HOST://172.25.135.222:19092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,CONNECTIONS_FROM_HOST://172.17.247.163:19092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
 #      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
 #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 
+#  broker-2:
+#    image: confluentinc/cp-kafka:7.0.0
+#    container_name: broker
+#    ports:
+#      - "19092:19092"
+#    networks:
+#      - rmoff_kafka
+#    depends_on:
+#      - zookeeper
+#    environment:
+#      KAFKA_BROKER_ID: 1
+#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,CONNECTIONS_FROM_HOST://172.17.247.163:19092
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
+#      #      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+#      #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
   client-consumer:
     build: ./kafka-consumer
     container_name: kafka-consumer
     depends_on:
-      - broker
+      - broker-1
       - zookeeper
     networks:
       - rmoff_kafka
@@ -49,7 +67,7 @@ services:
     ports:
       - "8083:8083"
     depends_on:
-      - broker
+      - broker-1
       - zookeeper
     networks:
       - rmoff_kafka
@@ -60,7 +78,7 @@ services:
     ports:
       - "8090:8090"
     depends_on:
-      - broker
+      - broker-1
       - zookeeper
     networks:
       - rmoff_kafka

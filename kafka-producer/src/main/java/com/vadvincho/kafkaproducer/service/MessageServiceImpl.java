@@ -5,7 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
 
 @Service
 @Slf4j
@@ -19,14 +24,20 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void send(OrderDto order) {
+    public ListenableFuture<SendResult<String, OrderDto>> send(OrderDto order) {
         log.info("<= Send {}", order.toString());
-        kafkaTemplate.send("order", order.getUserId().toString(), order);
+        return kafkaTemplate.send("order", order.getUserId().toString(), order);
     }
 
     @Override
     @KafkaListener(topics = {"order"}, containerFactory = "listenerContainerFactory")
-    public void consume(OrderDto order) {
-        log.info("=> consumed {}", order.toString());
+    public void consume(final @Payload OrderDto order,
+                        final @Header(KafkaHeaders.OFFSET) Integer offset,
+                        final @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
+                        final @Header(KafkaHeaders.RECEIVED_PARTITION_ID) int partition,
+                        final @Header(KafkaHeaders.RECEIVED_TOPIC) String topic,
+                        final @Header(KafkaHeaders.RECEIVED_TIMESTAMP) long ts) {
+        log.info(String.format("\n#### -> Consumed message -> TIMESTAMP: %d\n%s\noffset: %d\nkey: %s\npartition: %d\ntopic: %s",
+                ts, order, offset, key, partition, topic));
     }
 }

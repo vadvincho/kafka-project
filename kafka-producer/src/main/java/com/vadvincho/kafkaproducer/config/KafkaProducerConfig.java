@@ -18,10 +18,10 @@ import java.util.Map;
 @Configuration
 public class KafkaProducerConfig {
 
-    @Value("${kafka.server}")
+    @Value("${kafka.bootstrap-servers}")
     private String kafkaServer;
 
-    @Value("${kafka.producer.id}")
+    @Value("${kafka.producer.clientId}")
     private String kafkaProducerId;
 
     @Bean

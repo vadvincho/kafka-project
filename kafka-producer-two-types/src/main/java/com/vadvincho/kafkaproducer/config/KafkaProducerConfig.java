@@ -24,7 +24,7 @@ public class KafkaProducerConfig {
     @Value("${kafka.string.producer.id}")
     private String stringProducerId;
 
-    @Value("${spring.kafka.bootstrap-servers}")
+    @Value("${kafka.bootstrap-servers}")
     private String kafkaServer;
 
     @Bean
