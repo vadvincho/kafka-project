@@ -1,14 +1,11 @@
 package com.vadvincho.kafkaproducer.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vadvincho.kafkaproducer.dto.OrderDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFuture;
 
 @Service
 @Slf4j
@@ -16,12 +13,9 @@ public class MessageServiceImpl implements MessageService {
 
     private final KafkaTemplate<String, OrderDto> kafkaTemplate;
 
-    private final ObjectMapper objectMapper;
-
     @Autowired
-    public MessageServiceImpl(KafkaTemplate<String, OrderDto> kafkaTemplate, ObjectMapper objectMapper) {
+    public MessageServiceImpl(KafkaTemplate<String, OrderDto> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
-        this.objectMapper = objectMapper;
     }
 
     @Override

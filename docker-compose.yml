@@ -53,3 +53,14 @@ services:
       - zookeeper
     networks:
       - rmoff_kafka
+
+  client-producer-2types:
+    build: ./kafka-producer-two-types
+    container_name: kafka-producer-two-types
+    ports:
+      - "8090:8090"
+    depends_on:
+      - broker
+      - zookeeper
+    networks:
+      - rmoff_kafka
