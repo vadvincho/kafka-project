@@ -1,6 +1,6 @@
 package com.vadvincho.kafka.config;
 
-import com.vadvincho.kafka.model.OrderDto;
+import com.vadvincho.kafka.model.Order;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,7 +30,7 @@ public class KafkaConsumerConfig {
     private String kafkaConsumerClientId;
 
     @Bean
-    public ConsumerFactory<String, OrderDto> consumerFactory() {
+    public ConsumerFactory<String, Order> consumerFactory() {
         return new DefaultKafkaConsumerFactory<>(consumerConfigs());
     }
 
@@ -49,8 +49,8 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, OrderDto> listenerContainerFactory() {
-        ConcurrentKafkaListenerContainerFactory<String, OrderDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, Order> listenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, Order> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         factory.setBatchListener(false);
         factory.setMessageConverter(new StringJsonMessageConverter());

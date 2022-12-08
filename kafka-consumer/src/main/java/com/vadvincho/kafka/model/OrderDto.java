@@ -1,4 +1,4 @@
-package com.vadvincho.kafka.dto;
+package com.vadvincho.kafka.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;

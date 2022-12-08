@@ -1,6 +1,6 @@
 package com.vadvincho.kafka.service;
 
-import com.vadvincho.kafka.dto.OrderDto;
+import com.vadvincho.kafka.model.OrderDto;
 
 public interface MessageService {
 

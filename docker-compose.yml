@@ -31,8 +31,9 @@ services:
 #      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
 #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CREATE_TOPICS: "order:3:1"
 
-#  broker-2:
+  #  broker-2:
 #    image: confluentinc/cp-kafka:7.0.0
 #    container_name: broker
 #    ports:
@@ -58,8 +59,16 @@ services:
       - zookeeper
     networks:
       - rmoff_kafka
-    environment:
-      CLIENT_ID: 1
+
+
+  client-consumer-db:
+    build: ./kafka-consumer-db
+    container_name: kafka-consumer-db
+    depends_on:
+      - broker-1
+      - zookeeper
+    networks:
+      - rmoff_kafka
 
   client-producer:
     build: ./kafka-producer
@@ -82,3 +91,21 @@ services:
       - zookeeper
     networks:
       - rmoff_kafka
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 12345
+    networks:
+      - rmoff_kafka
+
+volumes:
+  postgres_data:
+    driver: local
