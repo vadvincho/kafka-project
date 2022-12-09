@@ -6,7 +6,7 @@ networks:
 
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:6.2.0
+    image: confluentinc/cp-zookeeper:7.3.0
     container_name: zookeeper
     networks:
       - rmoff_kafka
@@ -15,7 +15,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
 
   broker-1:
-    image: confluentinc/cp-kafka:7.0.0
+    image: confluentinc/cp-kafka:7.3.0
     container_name: broker
     ports:
       - "19092:19092"
