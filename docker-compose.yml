@@ -1,0 +1,111 @@
+version: '3.5'
+
+networks:
+  rmoff_kafka:
+    name: rmoff_kafka
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    container_name: zookeeper
+    networks:
+      - rmoff_kafka
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker-1:
+    image: confluentinc/cp-kafka:7.3.0
+    container_name: broker
+    ports:
+      - "19092:19092"
+    networks:
+      - rmoff_kafka
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,CONNECTIONS_FROM_HOST://172.17.247.163:19092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CREATE_TOPICS: "order:3:1"
+
+  #  broker-2:
+#    image: confluentinc/cp-kafka:7.0.0
+#    container_name: broker
+#    ports:
+#      - "19092:19092"
+#    networks:
+#      - rmoff_kafka
+#    depends_on:
+#      - zookeeper
+#    environment:
+#      KAFKA_BROKER_ID: 1
+#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,CONNECTIONS_FROM_HOST://172.17.247.163:19092
+#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONNECTIONS_FROM_HOST:PLAINTEXT
+#      #      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+#      #      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092
+#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  client-consumer:
+    build: ./kafka-consumer
+    container_name: kafka-consumer
+    depends_on:
+      - broker-1
+      - zookeeper
+    networks:
+      - rmoff_kafka
+
+
+  client-consumer-db:
+    build: ./kafka-consumer-db
+    container_name: kafka-consumer-db
+    depends_on:
+      - broker-1
+      - zookeeper
+    networks:
+      - rmoff_kafka
+
+  client-producer:
+    build: ./kafka-producer
+    container_name: kafka-producer
+    ports:
+      - "8083:8083"
+    depends_on:
+      - broker-1
+      - zookeeper
+    networks:
+      - rmoff_kafka
+
+  client-producer-2types:
+    build: ./kafka-producer-two-types
+    container_name: kafka-producer-two-types
+    ports:
+      - "8090:8090"
+    depends_on:
+      - broker-1
+      - zookeeper
+    networks:
+      - rmoff_kafka
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 12345
+    networks:
+      - rmoff_kafka
+
+volumes:
+  postgres_data:
+    driver: local
